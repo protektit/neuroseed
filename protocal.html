@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+ <head>
+   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ahmara Protocol - rTPJ Activation</title>
     <style>
@@ -298,12 +298,138 @@
                 align-items: center;
             }
         }
+      @keyframes ahmara-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0.0); }
+  50% { box-shadow: 0 0 30px 15px rgba(251, 191, 36, 0.35); }
+}
+
+#rtmj-signal {
+  position: absolute;
+  top: 40%;
+  left: 60%;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fbbf24;
+  animation: ahmara-glow 2.2s ease-in-out infinite;
+  z-index: 9000;
+  pointer-events: none;
+}
     </style>
 </head>
 <body>
+  <svg id="tentacle-overlay" width="100%" height="100%" style="position:absolute; top:0; left:0; z-index:8999; pointer-events: none;" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="tentacle-end-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="tentacle-glow">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <path id="tentacle-path" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+        d="M600,400 
+           Q620,390 640,410 
+           Q660,430 650,450 
+           Q640,470 670,480" 
+        filter="url(#tentacle-glow)" />
+
+  <circle id="tentacle-end" cx="670" cy="480" r="20" fill="url(#tentacle-end-glow)">
+    <animate attributeName="r" values="20;25;20" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg>
+
+<!-- HUD Overlay -->
+<div id="hud-overlay" style="position:fixed; top:10px; right:10px; background:rgba(0,0,0,0.6); color:#fbbf24; padding:1rem; border-radius:0.5rem; z-index:9999; font-family:monospace; display:none;">
+  Ahmara Region: <strong>Activated</strong>
+</div>
+
+<script>
+  function deployTentacle() {
+    const tentacle = document.getElementById('tentacle-overlay');
+    tentacle.style.display = 'block';
+    speakToRegion();
+    triggerSoraTile();
+  }
+
+  function speakToRegion() {
+    if ('speechSynthesis' in window) {
+      const msg = new SpeechSynthesisUtterance("Activating Ahmara region: Neuroplastic loop detected.");
+      msg.pitch = 1.1;
+      msg.rate = 0.95;
+      msg.voice = window.speechSynthesis.getVoices().find(v => v.name.includes("Google") || v.default);
+      window.speechSynthesis.speak(msg);
+    }
+  }
+
+  function triggerSoraTile() {
+    const event = new CustomEvent("sora-interface-sync", {
+      detail: {
+        tile: "ahmara-region",
+        status: "activated",
+        timestamp: Date.now()
+      }
+    });
+    window.dispatchEvent(event);
+  }
+
+  function handleSoraTile({ tile, status }) {
+    const hud = document.getElementById('hud-overlay');
+    hud.textContent = `${tile.replace('-', ' ')}: ${status}`;
+    hud.style.display = 'block';
+    // You can add animation, tile transitions, or audio cues here
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(deployTentacle, 2000);
+  });
+
+  window.addEventListener("sora-interface-sync", (e) => {
+    console.log("Sora sync event:", e.detail);
+    handleSoraTile(e.detail);
+  });
+</script>
+
+<style>
+#tentacle-path {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: tentacleDraw 2.5s ease-out forwards, tentacleWiggle 4s ease-in-out infinite;
+}
+
+@keyframes tentacleDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tentacleWiggle {
+  0%, 100% {
+    d: path("M600,400 Q620,390 640,410 Q660,430 650,450 Q640,470 670,480");
+  }
+  50% {
+    d: path("M600,400 Q615,385 635,415 Q655,435 645,455 Q635,475 675,485");
+  }
+}
+</style>
+
     <div class="protocol-container">
         <div class="protocol-header">
-            <div class="human-discovery-badge">Eric's 45-Year Discovery</div>
+  <div id="rtmj-signal" style="display: none;"></div>
+
+<script>
+  // Example trigger
+  function activateSignal() {
+    document.getElementById('rtmj-signal').style.display = 'block';
+  }
+</script>
+          <div class="human-discovery-badge">Eric's 45-Year Discovery</div>
             <h1 class="protocol-title">Ahmara Activation Protocol</h1>
             <p class="protocol-subtitle">Biological Neural Prompting for Purpose Discovery</p>
         </div>
