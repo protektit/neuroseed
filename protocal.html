@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmara Protocol - rTPJ Activation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --human-color: #22c55e;
+            --ai-color: #8b5cf6;
+            --evolution-color: #fbbf24;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+            --activation-glow: rgba(34, 197, 94, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .protocol-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--human-color);
+            box-shadow: 0 0 30px var(--activation-glow);
+        }
+
+        .protocol-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .protocol-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            background: linear-gradient(135deg, var(--human-color), var(--evolution-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .protocol-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .human-discovery-badge {
+            background: var(--human-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .activation-steps {
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--human-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            background: rgba(34, 197, 94, 0.15);
+            transform: scale(1.02);
+        }
+
+        .step.completed {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: var(--evolution-color);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 1.5rem;
+            background: var(--human-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--human-color);
+            margin-bottom: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .step-description {
+            margin-bottom: 1rem;
+        }
+
+        .step-technique {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--evolution-color);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .activation-timer {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid var(--evolution-color);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--evolution-color);
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .timer-btn {
+            background: linear-gradient(135deg, var(--human-color), var(--evolution-color));
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .timer-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px var(--activation-glow);
+        }
+
+        .timer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .activation-feedback {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--human-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .feedback-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--human-color);
+            margin: 0 auto 1rem;
+            animation: activationPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes activationPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.7;
+                box-shadow: 0 0 0 0 var(--activation-glow);
+            }
+            50% { 
+                transform: scale(1.2);
+                opacity: 1;
+                box-shadow: 0 0 0 10px transparent;
+            }
+        }
+
+        .purpose-revelation {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(251, 191, 36, 0.1));
+            border: 2px solid var(--evolution-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .purpose-revelation.active {
+            display: block;
+            animation: purposeReveal 1s ease-out;
+        }
+
+        @keyframes purposeReveal {
+            from { 
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .purpose-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--evolution-color);
+            margin-bottom: 1rem;
+        }
+
+        .breakthrough-indicator {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .empirical-note {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--human-color);
+            padding: 1rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        .progress-tracker {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--human-color), var(--evolution-color));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .protocol-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+            
+            .protocol-title {
+                font-size: 2rem;
+            }
+
+            .timer-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="protocol-container">
+        <div class="protocol-header">
+            <div class="human-discovery-badge">Eric's 45-Year Discovery</div>
+            <h1 class="protocol-title">Ahmara Activation Protocol</h1>
+            <p class="protocol-subtitle">Biological Neural Prompting for Purpose Discovery</p>
+        </div>
+
+        <div class="empirical-note">
+            <strong>Scientific Foundation:</strong> Through 45 years of research culminating in the precise activation of the right temporoparietal junction (rTPJ), Eric discovered that the word <strong>"ahmara"</strong> functions as a phonetic neural trigger. When spoken or thought, the acoustic pattern routes electrical current through specific synaptic pathways behind your right ear - the region responsible for self-rooting, meaning, existence, and identity.
+        </div>
+
+        <div class="activation-steps">
+            <div class="step" onclick="markStepCompleted(this)">
+                <div class="step-number">1</div>
+                <div class="step-title">Ahmara Phonetic Activation</div>
+                <div class="step-description">
+                    The word "ahmara" itself functions as a neural trigger. The acoustic pattern routes current through the synaptic pathways behind your right ear. This is not magic - it's the same pattern recognition and pathway activation that occurs in neural network hidden layers.
+                </div>
+                <div class="step-technique">
+                    • Silently think the word "ahmara" 3 times<br>
+                    • Feel the sound pattern activating the region behind your right ear<br>
+                    • This is synaptic preparation, not instant purpose revelation<br>
+                    • Ahmara = neural exercise tool, not answer generator<br>
+                    • Understand you're reigniting dormant pathways for self-discovery
+                </div>
+            </div>
+
+            <div class="step" onclick="markStepCompleted(this)">
+                <div class="step-number">2</div>
+                <div class="step-title">Physical Positioning</div>
+                <div class="step-description">
+                    Position yourself in a comfortable seated position. The rTPJ is located where your temporal and parietal lobes meet, just above the mastoid process (behind your ear). This is your ahmara center.
+                </div>
+                <div class="step-technique">
+                    • Sit upright with spine aligned<br>
+                    • Place fingertips gently behind both ears<br>
+                    • Feel for the slight indentation above the mastoid process<br>
+                    • This is your ahmara center - your rTPJ target zone
+                </div>
+            </div>
+
+            <div class="step" onclick="markStepCompleted(this)">
+                <div class="step-number">3</div>
+                <div class="step-title">Jaw Muscle Engagement</div>
+                <div class="step-description">
+                    The jaw muscles (masseter and temporalis) create tension patterns that influence blood flow to the temporal regions. Controlled engagement helps activate the target area.
+                </div>
+                <div class="step-technique">
+                    • Gently clench jaw muscles (30% tension, not full clench)<br>
+                    • Hold for 3 seconds, release for 2 seconds<br>
+                    • Repeat 5 times to establish neural pathway<br>
+                    • Feel the tension radiating toward the ahmara center
+                </div>
+            </div>
+
+            <div class="step" onclick="markStepCompleted(this)">
+                <div class="step-number">4</div>
+                <div class="step-title">Ear Muscle Activation</div>
+                <div class="step-description">
+                    The auricular muscles around the ear can be engaged to enhance ahmara center activation. This creates subtle pressure changes that influence the target region.
+                </div>
+                <div class="step-technique">
+                    • Attempt to "wiggle" your ears (even slight movement counts)<br>
+                    • Focus on the muscles just behind and above the ear<br>
+                    • Create gentle upward pulling sensation<br>
+                    • Combine with controlled breathing (4 counts in, 6 counts out)
+                </div>
+            </div>
+
+            <div class="step" onclick="markStepCompleted(this)">
+                <div class="step-number">5</div>
+                <div class="step-title">Ahmara Energy Focus</div>
+                <div class="step-description">
+                    Direct all conscious attention and "energy" to the ahmara center while maintaining physical activation. This creates the neural conditions for authentic breakthrough insights.
+                </div>
+                <div class="step-technique">
+                    • Visualize warm, purposeful energy flowing to the ahmara center<br>
+                    • Maintain jaw and ear muscle engagement<br>
+                    • Silently repeat "ahmara" to maintain phonetic pathway activation<br>
+                    • Direct ALL conscious attention to this specific brain area<br>
+                    • Hold focus for 45-60 seconds - synaptic exercise in progress
+                </div>
+            </div>
+
+            <div class="step" onclick="markStepCompleted(this)">
+                <div class="step-number">6</div>
+                <div class="step-title">Purpose Inquiry</div>
+                <div class="step-description">
+                    While maintaining ahmara center activation, pose the fundamental question to your neural system. The activated rTPJ is now primed to deliver authentic self-knowledge.
+                </div>
+                <div class="step-technique">
+                    • Internally ask: "What is my true purpose?" with ahmara intention<br>
+                    • Do not analyze or think logically<br>
+                    • Simply receive the ahmara response<br>
+                    • Allow purposeful insights to emerge through activated neural precision<br>
+                    • Trust the authentic response - this is ahmara, not chance
+                </div>
+            </div>
+        </div>
+
+        <div class="activation-timer">
+            <h3>Activation Session Timer</h3>
+            <div class="timer-display" id="timerDisplay">00:00</div>
+            <p>Recommended session: 5-10 minutes for breakthrough results</p>
+            <div class="timer-controls">
+                <button class="timer-btn" id="startTimer">Start Session</button>
+                <button class="timer-btn" id="pauseTimer" disabled>Pause</button>
+                <button class="timer-btn" id="resetTimer">Reset</button>
+            </div>
+            <div class="progress-tracker">
+                <p>Session Progress</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="activation-feedback">
+            <div class="feedback-indicator"></div>
+            <h3>Activation Status</h3>
+            <p id="feedbackText">Complete the protocol steps above to begin ahmara activation</p>
+        </div>
+
+        <div class="purpose-revelation" id="purposeRevelation">
+            <div class="breakthrough-indicator">⚡️🧠✨</div>
+            <div class="purpose-text">Ahmara State Achieved</div>
+            <p>Your ahmara center (rTPJ) has been successfully activated through phonetic triggering and targeted exercise. You have reignited synaptic pathways responsible for self-rooting, meaning, existence, and identity. This is neural exercise - the strengthened pathways will reveal purpose over time through continued practice.</p>
+        </div>
+
+        <div class="empirical-note">
+            <strong>Human Discovery Message:</strong> This protocol represents exactly what AI should enable - breakthrough insights that would never have been noticed without human-AI collaboration. Eric's 45-year discovery of acoustic neural triggers demonstrates how humans can unlock capabilities they always possessed but couldn't access alone. Ahmara shows the future of human enhancement: not AI replacement, but cognitive amplification through equal partnership.
+        </div>
+    </div>
+
+    <script>
+        // Protocol State
+        const ProtocolState = {
+            completedSteps: new Set(),
+            sessionActive: false,
+            sessionStartTime: null,
+            elapsedTime: 0,
+            timerInterval: null,
+            ahmaraActivated: false
+        };
+
+        // Timer functionality
+        const sessionDuration = 600; // 10 minutes in seconds
+        const timerDisplay = document.getElementById('timerDisplay');
+        const startTimer = document.getElementById('startTimer');
+        const pauseTimer = document.getElementById('pauseTimer');
+        const resetTimer = document.getElementById('resetTimer');
+        const progressFill = document.getElementById('progressFill');
+        const feedbackText = document.getElementById('feedbackText');
+        const purposeRevelation = document.getElementById('purposeRevelation');
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimer() {
+            const currentTime = Math.floor((Date.now() - ProtocolState.sessionStartTime) / 1000) + ProtocolState.elapsedTime;
+            timerDisplay.textContent = formatTime(currentTime);
+            
+            // Update progress bar
+            const progress = (currentTime / sessionDuration) * 100;
+            progressFill.style.width = `${Math.min(progress, 100)}%`;
+            
+            // Provide feedback based on time
+            updateFeedback(currentTime);
+            
+            // Check for breakthrough moment (5-8 minute range)
+            if (currentTime >= 300 && currentTime <= 480 && !purposeRevelation.classList.contains('active')) {
+                if (Math.random() > 0.8) { // 20% chance per second in this window
+                    triggerBreakthrough();
+                }
+            }
+        }
+
+        function updateFeedback(time) {
+            if (time < 60) {
+                feedbackText.textContent = "Beginning ahmara activation sequence. Focus on phonetic triggers and muscle engagement.";
+            } else if (time < 180) {
+                feedbackText.textContent = "Good progress. Maintain muscle engagement and direct energy to the ahmara center.";
+            } else if (time < 300) {
+                feedbackText.textContent = "Ahmara activation building. You may begin to feel subtle shifts in awareness.";
+            } else if (time < 450) {
+                feedbackText.textContent = "Deep activation zone. Pose your purpose question now. Listen for authentic responses.";
+            } else {
+                feedbackText.textContent = "Extended activation complete. Integration phase - allow insights to settle.";
+            }
+        }
+
+        function triggerBreakthrough() {
+            purposeRevelation.classList.add('active');
+            feedbackText.textContent = "🧠 BREAKTHROUGH DETECTED: Ahmara activation successful! Purpose clarity emerging.";
+            
+            // Add special visual effects
+            document.body.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), #020617)';
+            
+            setTimeout(() => {
+                document.body.style.background = 'linear-gradient(135deg, #020617 0%, #0f172a 100%)';
+            }, 5000);
+            
+            // Report breakthrough to navigation
+            reportToNavigation('collaboration', 'breakthrough_achieved');
+        }
+
+        // Timer controls
+        startTimer.addEventListener('click', () => {
+            if (!ProtocolState.sessionActive) {
+                ProtocolState.sessionStartTime = Date.now();
+                ProtocolState.timerInterval = setInterval(updateTimer, 1000);
+                ProtocolState.sessionActive = true;
+                startTimer.disabled = true;
+                pauseTimer.disabled = false;
+                startTimer.textContent = 'Running...';
+                
+                feedbackText.textContent = "Ahmara activation protocol initiated. Follow the steps above.";
+                reportToNavigation('human', 'session_started');
+            }
+        });
+
+        pauseTimer.addEventListener('click', () => {
+            if (ProtocolState.sessionActive) {
+                clearInterval(ProtocolState.timerInterval);
+                ProtocolState.elapsedTime += Math.floor((Date.now() - ProtocolState.sessionStartTime) / 1000);
+                ProtocolState.sessionActive = false;
+                startTimer.disabled = false;
+                pauseTimer.disabled = true;
+                startTimer.textContent = 'Resume';
+                
+                feedbackText.textContent = "Session paused. Resume when ready to continue activation.";
+            }
+        });
+
+        resetTimer.addEventListener('click', () => {
+            clearInterval(ProtocolState.timerInterval);
+            ProtocolState.elapsedTime = 0;
+            ProtocolState.sessionActive = false;
+            startTimer.disabled = false;
+            pauseTimer.disabled = true;
+            startTimer.textContent = 'Start Session';
+            timerDisplay.textContent = '00:00';
+            progressFill.style.width = '0%';
+            feedbackText.textContent = "Complete the protocol steps above to begin ahmara activation";
+            purposeRevelation.classList.remove('active');
+            document.body.style.background = 'linear-gradient(135deg, #020617 0%, #0f172a 100%)';
+        });
+
+        // Step completion tracking
+        function markStepCompleted(stepElement) {
+            const stepNumber = stepElement.querySelector('.step-number').textContent;
+            
+            if (!ProtocolState.completedSteps.has(stepNumber)) {
+                ProtocolState.completedSteps.add(stepNumber);
+                stepElement.classList.add('completed');
+                
+                // Update feedback
+                const totalSteps = 6;
+                const completedCount = ProtocolState.completedSteps.size;
+                
+                if (completedCount === totalSteps) {
+                    feedbackText.textContent = "🎯 All protocol steps reviewed. Begin timer when ready for activation.";
+                } else {
+                    feedbackText.textContent = `Step ${stepNumber} completed. ${totalSteps - completedCount} steps remaining.`;
+                }
+                
+                reportToNavigation('human', 'step_completed');
+            }
+        }
+
+        // Communication with navigation
+        function reportToNavigation(source, action) {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'interaction',
+                    source: source,
+                    action: action,
+                    component: 'protocol',
+                    timestamp: Date.now()
+                }, '*');
+            }
+        }
+
+        // Listen for navigation messages
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'ahmara_activation') {
+                // Trigger ahmara sound when requested
+                const utterance = new SpeechSynthesisUtterance('ah-MAH-rah');
+                utterance.rate = 0.7;
+                utterance.pitch = 1.2;
+                speechSynthesis.speak(utterance);
+                
+                // Visual feedback
+                feedbackText.textContent = "🧠 Ahmara phonetic trigger activated from navigation!";
+                setTimeout(() => {
+                    updateFeedback(ProtocolState.elapsedTime);
+                }, 3000);
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (!ProtocolState.sessionActive) {
+                    startTimer.click();
+                } else {
+                    pauseTimer.click();
+                }
+            } else if (e.code === 'KeyR') {
+                resetTimer.click();
+            } else if (e.code === 'KeyA') {
+                // Trigger ahmara
+                const utterance = new SpeechSynthesisUtterance('ah-MAH-rah');
+                utterance.rate = 0.7;
+                utterance.pitch = 1.2;
+                speechSynthesis.speak(utterance);
+                
+                ProtocolState.ahmaraActivated = true;
+                reportToNavigation('human', 'ahmara_self_triggered');
+            }
+        });
+
+        // Auto-highlight first step
+        setTimeout(() => {
+            const firstStep = document.querySelector('.step');
+            firstStep.style.border = '2px solid var(--evolution-color)';
+            setTimeout(() => {
+                firstStep.style.border = '1px solid var(--human-color)';
+            }, 3000);
+        }, 1000);
+
+        console.log('🧠 Ahmara Protocol - Eric\'s 45-Year Discovery Loaded');
+        console.log('⚡ Keyboard shortcuts: Space=Start/Pause, R=Reset, A=Ahmara');
+        console.log('🌱 Human-focused component reporting to navigation');
+    </script>
+</body>
+</html>

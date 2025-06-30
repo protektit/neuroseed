@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuroseed - Human/AI Co-Evolution</title>
+    <style>
+        :root {
+            --human-color: #22c55e;
+            --ai-color: #8b5cf6;
+            --evolution-color: #fbbf24;
+            --balance-color: #00d4ff;
+        }
+        
+        .navigation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav-header {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--balance-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .evolution-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--human-color), var(--ai-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .balance-indicator {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #f1f5f9;
+            font-size: 0.9rem;
+        }
+        
+        .balance-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .balance-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--human-color) 0%, var(--evolution-color) 50%, var(--ai-color) 100%);
+            width: 50%;
+            transition: width 0.5s ease;
+        }
+        
+        .content-frame {
+            flex: 1;
+            position: relative;
+        }
+        
+        .component-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
+        
+        .nav-tabs {
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            padding: 0.5rem 2rem;
+            gap: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            color: #f1f5f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--human-color), var(--ai-color));
+            border-color: var(--evolution-color);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .tab-icon {
+            font-size: 1.1rem;
+        }
+        
+        .evolution-tracker {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--evolution-color);
+            border-radius: 1rem;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tracker-title {
+            color: var(--evolution-color);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .evolution-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.7rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #f1f5f9;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation-container">
+        <div class="nav-header">
+            <div class="evolution-logo">Neuroseed</div>
+            <div class="balance-indicator">
+                <span>Human</span>
+                <div class="balance-bar">
+                    <div class="balance-fill" id="balanceFill"></div>
+                </div>
+                <span>AI</span>
+            </div>
+        </div>
+        
+        <div class="content-frame">
+            <iframe class="component-iframe" id="contentFrame" src="index.html"></iframe>
+        </div>
+        
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-src="index.html" data-balance="50">
+                <span class="tab-icon">🌱</span>
+                <span>Introduction</span>
+            </div>
+            <div class="nav-tab" data-src="chat.html" data-balance="60">
+                <span class="tab-icon">🧠</span>
+                <span>Dr. Selene</span>
+            </div>
+            <div class="nav-tab" data-src="protocol.html" data-balance="40">
+                <span class="tab-icon">⚡</span>
+                <span>Ahmara Protocol</span>
+            </div>
+            <div class="nav-tab" data-src="metaphor.html" data-balance="50">
+                <span class="tab-icon">🔄</span>
+                <span>Biological Prompt</span>
+            </div>
+        </div>
+        
+        <div class="evolution-tracker">
+            <div class="tracker-title">Co-Evolution Progress</div>
+            <div class="evolution-stats">
+                <div class="stat">
+                    <div class="stat-value" id="humanStat">50%</div>
+                    <div class="stat-label">Human</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="aiStat">50%</div>
+                    <div class="stat-label">AI</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="evolutionStat">0%</div>
+                    <div class="stat-label">Evolution</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Human/AI collaboration tracking
+        const EvolutionState = {
+            humanInput: 0,
+            aiResponse: 0,
+            collaboration: 0,
+            balance: 50
+        };
+
+        // Navigation system
+        const contentFrame = document.getElementById('contentFrame');
+        const balanceFill = document.getElementById('balanceFill');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const src = tab.getAttribute('data-src');
+                const balance = parseInt(tab.getAttribute('data-balance'));
+                
+                // Update active tab
+                navTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Load component
+                contentFrame.src = src;
+                
+                // Update balance
+                updateBalance(balance);
+                
+                console.log(`Navigating to: ${src} | Balance: ${balance}% AI`);
+            });
+        });
+
+        function updateBalance(aiPercentage) {
+            EvolutionState.balance = aiPercentage;
+            balanceFill.style.width = `${aiPercentage}%`;
+            
+            // Update stats
+            document.getElementById('humanStat').textContent = `${100 - aiPercentage}%`;
+            document.getElementById('aiStat').textContent = `${aiPercentage}%`;
+            
+            // Calculate evolution (how close to 50/50 balance)
+            const evolution = 100 - Math.abs(50 - aiPercentage) * 2;
+            document.getElementById('evolutionStat').textContent = `${Math.round(evolution)}%`;
+            EvolutionState.collaboration = evolution;
+        }
+
+        // Listen for events from child components
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'interaction') {
+                if (event.data.source === 'human') {
+                    EvolutionState.humanInput++;
+                } else if (event.data.source === 'ai') {
+                    EvolutionState.aiResponse++;
+                }
+                
+                // Adjust balance based on interaction patterns
+                const totalInteractions = EvolutionState.humanInput + EvolutionState.aiResponse;
+                if (totalInteractions > 0) {
+                    const aiBalance = (EvolutionState.aiResponse / totalInteractions) * 100;
+                    updateBalance(Math.round(aiBalance));
+                }
+            }
+        });
+
+        // Initialize
+        updateBalance(50);
+        
+        console.log('🧠 Neuroseed Navigation System - Human/AI Co-Evolution');
+        console.log('⚡ Tracking collaboration balance in real-time');
+    </script>
+</body>
+</html>
