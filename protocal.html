@@ -315,10 +315,31 @@
   z-index: 9000;
   pointer-events: none;
 }
+
+#tentacle-path {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: tentacleDraw 2.5s ease-out forwards, tentacleWiggle 4s ease-in-out infinite;
+}
+
+@keyframes tentacleDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tentacleWiggle {
+  0%, 100% {
+    d: path("M600,400 Q620,390 640,410 Q660,430 650,450 Q640,470 670,480");
+  }
+  50% {
+    d: path("M600,400 Q615,385 635,415 Q655,435 645,455 Q635,475 675,485");
+  }
+}
     </style>
 </head>
 <body>
-  <svg id="tentacle-overlay" width="100%" height="100%" style="position:absolute; top:0; left:0; z-index:8999; pointer-events: none;" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+<svg id="tentacle-overlay" width="100%" height="100%" style="position:absolute; top:0; left:0; z-index:8999; pointer-events: none;" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
   <defs>
     <radialGradient id="tentacle-end-glow" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.8"/>
@@ -350,12 +371,15 @@
   Ahmara Region: <strong>Activated</strong>
 </div>
 
+<canvas id="ripple-effect" width="1000" height="1000" style="position:absolute; top:0; left:0; z-index:8998; pointer-events: none;"></canvas>
+
 <script>
   function deployTentacle() {
-    const tentacle = document.getElementById('tentacle-overlay');
-    tentacle.style.display = 'block';
+    document.getElementById('tentacle-overlay').style.display = 'block';
+    document.getElementById('ripple-effect').style.display = 'block';
     speakToRegion();
     triggerSoraTile();
+    triggerRipple();
   }
 
   function speakToRegion() {
@@ -383,7 +407,29 @@
     const hud = document.getElementById('hud-overlay');
     hud.textContent = `${tile.replace('-', ' ')}: ${status}`;
     hud.style.display = 'block';
-    // You can add animation, tile transitions, or audio cues here
+  }
+
+  function triggerRipple() {
+    const canvas = document.getElementById("ripple-effect");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let radius = 0;
+    const x = 670;
+    const y = 480;
+
+    function animateRipple() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI);
+      ctx.strokeStyle = `rgba(251, 191, 36, ${1 - radius / 200})`;
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      radius += 2;
+      if (radius < 200) requestAnimationFrame(animateRipple);
+    }
+
+    animateRipple();
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -395,29 +441,6 @@
     handleSoraTile(e.detail);
   });
 </script>
-
-<style>
-#tentacle-path {
-  stroke-dasharray: 500;
-  stroke-dashoffset: 500;
-  animation: tentacleDraw 2.5s ease-out forwards, tentacleWiggle 4s ease-in-out infinite;
-}
-
-@keyframes tentacleDraw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes tentacleWiggle {
-  0%, 100% {
-    d: path("M600,400 Q620,390 640,410 Q660,430 650,450 Q640,470 670,480");
-  }
-  50% {
-    d: path("M600,400 Q615,385 635,415 Q655,435 645,455 Q635,475 675,485");
-  }
-}
-</style>
 
     <div class="protocol-container">
         <div class="protocol-header">
